@@ -2,7 +2,6 @@ from imutils import face_utils
 import dlib
 import cv2
 
-# Vamos inicializar um detector de faces (HOG) para então
 # let's go code an faces detector(HOG) and after detect the 
 # landmarks on this detected face
 
@@ -28,7 +27,7 @@ while True:
         shape = predictor(gray, rect)
         shape = face_utils.shape_to_np(shape)
 
-        # Draw on our image, all the finded cordinate points (x,y) 
+        # Draw on our image, all the found coordinate points (x,y)
         for (x, y) in shape:
             cv2.circle(image, (x, y), 2, (0, 255, 0), -1)
 
