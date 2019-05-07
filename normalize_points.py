@@ -20,11 +20,11 @@ def normalize_points(x, y):
     # 3x3 transformation matrix
     t_norm = np.array([[sf, 0, -sf*mean_x], [0, sf, -sf*mean_y], [0, 0, 1]])
 
-    o = np.ones((num_points,1))
+    o = np.ones((num_points, 1))
 
-    xy = np.concatenate((x, y, o), axis=0).reshape(-1, 4)
+    xy = np.concatenate((x, y, o), axis=1)
 
     # (n x 3) normalized homogeneous coordinates of points
-    xy_normalized = np.transpose(np.matmul(t_norm, xy))
+    xy_normalized = np.matmul(xy, t_norm)
 
     return xy_normalized, t_norm
