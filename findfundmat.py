@@ -40,13 +40,14 @@ def findfundmat(image1, image2):
     F = smallest.reshape(3, 3)
 
     # enforce singularity constraint (must be singular and of rank 2)
+    '''
     U, D, V = np.linalg.svd(F)
     r = D[0]
     s = D[1]
 
     F = U*np.diag([r, s, 0])*V.T
     F = t2.T * F * t1
-
+    '''
     return F
 
 
