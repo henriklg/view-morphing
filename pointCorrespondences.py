@@ -79,9 +79,6 @@ def get_coords(event, x, y, flags, param):
         point = x, y
         print(point)
 
-def return_coords(x, y):
-    return x, y
-
 
 def automatic_point_correspondences_imshow(file_1, file_2):
     # Load pre-trained facial features model
@@ -103,7 +100,7 @@ def automatic_point_correspondences_imshow(file_1, file_2):
     detect1 = True
     detect2 = True
     # For each detected face in each image, draw the points
-    while(True):
+    while (True):
         k = cv2.waitKey(20) & 0xFF
         # Image 1:
         if detect1:
@@ -132,7 +129,6 @@ def automatic_point_correspondences_imshow(file_1, file_2):
 
         if k == ord('s'):
             cv2.destroyAllWindows()
-
             break
 
     im1 = im
@@ -147,6 +143,7 @@ def automatic_point_correspondences_imshow(file_1, file_2):
 
 
     return shape_1, shape_2
+
 
 def automatic_point_correspondences(file_1, file_2):
     # Load pre-trained facial features model
@@ -176,10 +173,16 @@ def automatic_point_correspondences(file_1, file_2):
         shape = predictor(im2, rect)
         shape_2 = face_utils.shape_to_np(shape)
 
-    return shape_1[:, 0], shape_1[:, 1], shape_2[:, 0], shape_2[:, 1]
+    # some magic to make the coordinates compatible with other code
+    x1 = shape_1[:, 0][np.newaxis].T
+    y1 = shape_1[:, 1][np.newaxis].T
+    x2 = shape_2[:, 0][np.newaxis].T
+    y2 = shape_2[:, 1][np.newaxis].T
+
+    return x1, y1, x2, y2
 
 
 if __name__ == '__main__':
-    #posList = []
     x_1, y_1, x_2, y_2 = automatic_point_correspondences('einstein1.jpg', 'einstein3.jpg')
-    #print(posList)
+    print(np.shape(x_1))
+    #print((x_1)[np.newaxis].T)

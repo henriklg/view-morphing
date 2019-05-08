@@ -1,7 +1,4 @@
-#import cv2
 import numpy as np
-from matplotlib import pyplot as plt
-import math
 
 def find_epipoles(F):
     """
@@ -22,11 +19,11 @@ def find_epipoles(F):
     e0 = vector0[np.argmin(value0)]
     e1 = vector1[np.argmin(value1)]
 
-    print('find epipoles function')
-    print(value0)
-    print(vector0)
-    print(value1)
-    print(vector1)
+    #print('find epipoles function')
+    #print(value0)
+    #print(vector0)
+    #print(value1)
+    #print(vector1)
 
     return e0, e1
 
@@ -124,15 +121,16 @@ def find_prewarp(F):
     H1 = T * R_phi1 * R_d1_theta1
     """
 
+    return H0, H1
 
 
-    return H0,H1
 
-#test
-#F = np.array([[2, 1, 0],
-#              [1, 2, 1],
-#              [4, 6, 2]])
+if __name__ == '__main__':
 
-#H0,H2 = find_prewarp(F)
-#print(H0)
-#print(H2)
+    F = np.array([[2, 1, 0],
+        [1, 2, 1],
+        [4, 6, 2]])
+
+    H0, H2 = find_prewarp(F)
+    print(H0)
+    print(H2)
