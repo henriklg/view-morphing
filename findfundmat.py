@@ -1,6 +1,5 @@
 
 import numpy as np
-from getcoords import getcoords
 from normalize_points import normalize_points
 from pointCorrespondences import automatic_point_correspondences
 
