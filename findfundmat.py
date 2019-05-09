@@ -1,4 +1,3 @@
-
 import numpy as np
 from normalize_points import normalize_points
 from pointCorrespondences import automatic_point_correspondences
@@ -12,8 +11,7 @@ def findfundmat(image1, image2):
     :return:
     """
     [x1, y1, x2, y2] = automatic_point_correspondences(image1, image2)
-
-    F = np.zeros((3, 3))
+    #F = np.zeros((3, 3))
 
     # get the number of data points
     num_points = len(x1)
@@ -35,18 +33,17 @@ def findfundmat(image1, image2):
     U, D, V = np.linalg.svd(a)
 
     # extract column of the smallest singular value - the last column
-    smallest = V[:, 8]
+    smallest = V[8, :].T
     F = smallest.reshape(3, 3)
 
     # enforce singularity constraint (must be singular and of rank 2)
-    '''
     U, D, V = np.linalg.svd(F)
     r = D[0]
     s = D[1]
 
-    F = U*np.diag([r, s, 0])*V.T
-    F = t2.T * F * t1
-    '''
+    F = np.dot(U, np.diag([r, s, 0])).dot(V)
+    F = t2.T.dot(F).dot(t1)
+
     return F
 
 

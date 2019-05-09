@@ -5,7 +5,7 @@ def normalize_points(x, y):
     function computing normalization (translation and scaling) of the coordinates of the matched points
 
     :param x; (n x 1 ndarray) x coordinates of points
-    :param y: (n x 1 ndarray) y coordiantes of points
+    :param y: (n x 1 ndarray) y coordinates of points
     :return:
     """
     num_points = len(x)
@@ -25,6 +25,6 @@ def normalize_points(x, y):
     xy = np.concatenate((x, y, o), axis=1)
 
     # (n x 3) normalized homogeneous coordinates of points
-    xy_normalized = np.matmul(xy, t_norm)
+    xy_normalized = np.dot(t_norm, xy.T)
 
-    return xy_normalized, t_norm
+    return xy_normalized.T, t_norm
