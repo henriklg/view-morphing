@@ -16,8 +16,8 @@ def find_epipoles(F):
     value1, vector1 = np.linalg.eig(np.transpose(F))
 
     #the epipoles are the eigenvector of the smallest eigenvalue
-    e0 = vector0[np.argmin(value0)]
-    e1 = vector1[np.argmin(value1)]
+    e0 = vector0[:, np.argmin(value0)]
+    e1 = vector1[:, np.argmin(value1)]
 
     #print('find epipoles function')
     #print(value0)
