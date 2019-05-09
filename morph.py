@@ -225,4 +225,12 @@ if __name__ == '__main__':
             if i > 1:
                 i = 1
 
+        if k == ord('p'):
+            i -= 0.05
+            if i < 0:
+                i = 0
+            morph = delaunay_triangulation(image1, image2, points_1, points_2, i)
+
+
+
     cv2.destroyAllWindows()

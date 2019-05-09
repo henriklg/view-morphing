@@ -80,17 +80,17 @@ def get_coords(event, x, y, flags, param):
         print(point)
 
 
-def automatic_point_correspondences_imshow(file_1, file_2):
+def automatic_point_correspondences_imshow(im1, im2):
     # Load pre-trained facial features model
     p = "shape_predictor_68_face_landmarks.dat"
     detector = dlib.get_frontal_face_detector()
     predictor = dlib.shape_predictor(p)
 
     # Load images and convert to grayscale
-    im1 = cv2.imread(file_1)
+    #im1 = cv2.imread(file_1)
     im1 = cv2.cvtColor(im1, cv2.COLOR_BGR2GRAY)
     im = im1.copy()
-    im2 = cv2.imread(file_2)
+    #im2 = cv2.imread(file_2)
     im2 = cv2.cvtColor(im2, cv2.COLOR_BGR2GRAY)
 
     # Detect faces with the detector
@@ -145,16 +145,16 @@ def automatic_point_correspondences_imshow(file_1, file_2):
     return shape_1, shape_2
 
 
-def automatic_point_correspondences(file_1, file_2):
+def automatic_point_correspondences(im1, im2):
     # Load pre-trained facial features model
     p = "shape_predictor_68_face_landmarks.dat"
     detector = dlib.get_frontal_face_detector()
     predictor = dlib.shape_predictor(p)
 
     # Load images and convert to grayscale
-    im1 = cv2.imread(file_1)
+    #im1 = cv2.imread(file_1)
     im1 = cv2.cvtColor(im1, cv2.COLOR_BGR2GRAY)
-    im2 = cv2.imread(file_2)
+    #im2 = cv2.imread(file_2)
     im2 = cv2.cvtColor(im2, cv2.COLOR_BGR2GRAY)
 
     # Detect faces with the detector
@@ -183,6 +183,14 @@ def automatic_point_correspondences(file_1, file_2):
 
 
 if __name__ == '__main__':
-    x_1, y_1, x_2, y_2 = automatic_point_correspondences('einstein1.jpg', 'einstein3.jpg')
-    print(np.shape(x_1))
+    im1 = cv2.imread('einstein1.jpg')
+    im2 = cv2.imread('einstein3.jpg')
+    x_1, y_1, x_2, y_2 = automatic_point_correspondences(im1, im2)
+
+    str = '['
+    for point in y_2:
+        str = str + '{}; '.format(point[0])
+    str = str + ']'
+    print(str)
+
     #print((x_1)[np.newaxis].T)
