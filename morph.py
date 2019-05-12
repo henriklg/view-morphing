@@ -218,34 +218,42 @@ def insert_points(subdiv, p_list):
 
 
 if __name__ == '__main__':
-    image1 = cv2.imread('data/ted_cruz.jpg')
-    image2 = cv2.imread('data/hillary_clinton.jpg')
+    image1 = cv2.imread('data/einstein1.jpg')
+    image2 = cv2.imread('data/einstein3.jpg')
+    print(image1.shape)
 
     # Get points with dlib facial feature point detector
-    points_1, points_2 = automatic_point_correspondences('data/ted_cruz.jpg','data/hillary_clinton.jpg')
+    points_1, points_2 = automatic_point_correspondences(image1, image2)
 
     # morph with delaunay triangulation
     morph = delaunay_triangulation(image1, image2, points_1, points_2, 0)
 
     i = 0
+    count = 0
     while(True):
-        cv2.imshow("Output", morph)
+        cv2.imshow("Output", morph[70:178, 78:190])
 
         k = cv2.waitKey(20) & 0xFF
         # Press n button for next imorph
         if k == ord('n'):
-
-            morph = delaunay_triangulation(image1, image2, points_1, points_2, i)
-            print('____________________________________',  i)
-            i += 0.05
+            i += 0.2
 
             if i > 1:
                 i = 1
 
+            morph = delaunay_triangulation(image1, image2, points_1, points_2, i)
+            print('____________________________________',  i)
+
+
         if k == ord('p'):
-            i -= 0.05
+            i -= 0.2
             if i < 0:
                 i = 0
             morph = delaunay_triangulation(image1, image2, points_1, points_2, i)
+
+        if k == ord('s'):
+            cv2.imwrite('einstein_morph{}.jpg'.format(count), morph[70:178, 78:190])
+            count += 1
+            print('einstein_morph{}.jpg'.format(i))
 
     cv2.destroyAllWindows()
