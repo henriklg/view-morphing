@@ -8,16 +8,16 @@ from imutils import face_utils
 import time
 
 
-def automatic_point_correspondences(file_1, file_2):
+def automatic_point_correspondences(im1, im2):
     # Load pre-trained facial features model
     p = "shape_predictor_68_face_landmarks.dat"
     detector = dlib.get_frontal_face_detector()
     predictor = dlib.shape_predictor(p)
 
     # Load images and convert to grayscale
-    im1 = cv2.imread(file_1)
+    #im1 = cv2.imread(file_1)
     im1 = cv2.cvtColor(im1, cv2.COLOR_BGR2GRAY)
-    im2 = cv2.imread(file_2)
+    #im2 = cv2.imread(file_2)
     im2 = cv2.cvtColor(im2, cv2.COLOR_BGR2GRAY)
 
     # Detect faces with the detector
@@ -72,6 +72,7 @@ def mapDelaunay(triangles_A, points_A, points_B, points_C):
         triangles_B.append(tri_B)
 
         triangles_C.append(tri_C)
+        #print(len(triangles_B), len(triangles_A), len(triangles_C))
 
     return triangles_B, triangles_C
 
@@ -129,6 +130,22 @@ def delaunay_triangulation(image1, image2, points_1, points_2, alph=0.5):
         t1 = triangles_1[i]
         t2 = triangles_2[i]
         tk = triangles_k[i]
+
+        show = False
+        while(show):
+            array1 = np.array([(t1[0], t1[1]), (t1[2], t1[3]), (t1[4], t1[5])])
+            cv2.drawContours(image1, [array1.astype(int)], 0, (0, 255, 0), -1)
+            cv2.imshow('window', image1)
+
+            array2 = np.array([(t2[0], t2[1]), (t2[2], t2[3]), (t2[4], t2[5])])
+            cv2.drawContours(image2, [array2.astype(int)], 0, (0, 255, 0), -1)
+            cv2.imshow('window2', image2)
+            k = cv2.waitKey(20) & 0xFF
+            if k == ord('s'):
+                print('array 1: ', array1)
+                print('array 2: ', array2)
+                print('----------------------------------------')
+                show = False
 
         # Bounding rectangles created
         r1 = cv2.boundingRect(np.float32([(t1[0], t1[1]),
@@ -201,11 +218,11 @@ def insert_points(subdiv, p_list):
 
 
 if __name__ == '__main__':
-    image1 = cv2.imread('ted_cruz.jpg')
-    image2 = cv2.imread('hillary_clinton.jpg')
+    image1 = cv2.imread('data/ted_cruz.jpg')
+    image2 = cv2.imread('data/hillary_clinton.jpg')
 
     # Get points with dlib facial feature point detector
-    points_1, points_2 = automatic_point_correspondences('ted_cruz.jpg','hillary_clinton.jpg')
+    points_1, points_2 = automatic_point_correspondences('data/ted_cruz.jpg','data/hillary_clinton.jpg')
 
     # morph with delaunay triangulation
     morph = delaunay_triangulation(image1, image2, points_1, points_2, 0)
@@ -230,7 +247,5 @@ if __name__ == '__main__':
             if i < 0:
                 i = 0
             morph = delaunay_triangulation(image1, image2, points_1, points_2, i)
-
-
 
     cv2.destroyAllWindows()
