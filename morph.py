@@ -95,6 +95,16 @@ def applyAffineTransform(im_src, t_scr, dest_scr, size):
 
     return dst
 
+def remove_points(points_1, points_2, remove_idx=None):
+    if remove_idx is None:
+        remove_idx = [50, 60, 61, 62, 68, 63, 64, 66, 54, 65, 56, 33, 35]
+
+
+    points_1 = np.delete(points_1, remove_idx, 0)
+    points_2 = np.delete(points_2, remove_idx, 0)
+
+    return points_1, points_2
+
 def delaunay_triangulation(image1, image2, points_1, points_2, alph=0.5):
     """
     Performs morphing of two images with delaunay triangulation. Alph indicates how much morphed image looks like image 2
@@ -105,6 +115,9 @@ def delaunay_triangulation(image1, image2, points_1, points_2, alph=0.5):
     :param alph: between 0 and 1. Indicates likeness to one image
     :return: morphed image
     """
+    # Remove some points to avoid overcrowding
+    points_1, points_2 = remove_points(points_1, points_2)
+
     # Get intermediate points for generated image
     points_k = (1-alph)*points_1 + alph*points_2
 
@@ -252,8 +265,8 @@ if __name__ == '__main__':
             morph = delaunay_triangulation(image1, image2, points_1, points_2, i)
 
         if k == ord('s'):
-            cv2.imwrite('einstein_morph{}.jpg'.format(count), morph[70:178, 78:190])
+            cv2.imwrite('einstein_morph_removed{}.jpg'.format(count), morph[70:178, 78:190])
             count += 1
-            print('einstein_morph{}.jpg'.format(i))
+            print('einstein_morph_removed{}.jpg'.format(i))
 
     cv2.destroyAllWindows()
