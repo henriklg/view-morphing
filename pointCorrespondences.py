@@ -18,7 +18,6 @@ def getPointCorrespondences(im1, im2):
     cv2.namedWindow('Images', cv2.WINDOW_NORMAL)
     cv2.setMouseCallback('Images', get_coords)
 
-    num_points = 0
     while True:
         cv2.imshow('Images', numpy_horizontal)
         k = cv2.waitKey(20) & 0xFF
@@ -27,35 +26,25 @@ def getPointCorrespondences(im1, im2):
             cv2.circle(numpy_horizontal, point, 2, (0, 0, 255), 2)
             point_click = point
             point_list.append(point_click)
-            print(point_list)
-            num_points += 1
 
         if k == 27:
             break
 
         # S: return list of points
         elif k == ord('s'):
-            count = 0
-            countx = 0
-            county = 0
-            pointx = np.zeros((num_points//2, 2))  # [num_points, x]
-            pointy = np.zeros((num_points//2, 2))
+            count = countx = county = 0
+            pointx = pointy = np.zeros(( (len(point_list)+1)//2, 2))  # [num_points, 2]
             for p in point_list:
                 # image 1
                 if count % 2 == 0:
-                    x = p[0]
-                    y = p[1]
-                    pointx[countx] = [x, y]
+                    pointx[countx] = [p[0], p[1]]
                     countx += 1
                 # image 2
                 else:
-                    x = p[0] - width
-                    y = p[1]
-                    pointy[county] = [x, y]
+                    pointy[county] = [p[0]-width, p[1]]
                     county += 1
                 count += 1
             return pointx, pointy
-
 
         # N: new list of points
         elif k == ord('n'):
@@ -81,10 +70,8 @@ def automatic_point_correspondences_imshow(im1, im2):
     predictor = dlib.shape_predictor(p)
 
     # Load images and convert to grayscale
-    #im1 = cv2.imread(file_1)
     im1 = cv2.cvtColor(im1, cv2.COLOR_BGR2GRAY)
     im = im1.copy()
-    #im2 = cv2.imread(file_2)
     im2 = cv2.cvtColor(im2, cv2.COLOR_BGR2GRAY)
 
     # Detect faces with the detector
@@ -146,9 +133,7 @@ def automatic_point_correspondences(im1, im2):
     predictor = dlib.shape_predictor(p)
 
     # Load images and convert to grayscale
-    #im1 = cv2.imread(file_1)
     im1 = cv2.cvtColor(im1, cv2.COLOR_BGR2GRAY)
-    #im2 = cv2.imread(file_2)
     im2 = cv2.cvtColor(im2, cv2.COLOR_BGR2GRAY)
 
     # Detect faces with the detector
