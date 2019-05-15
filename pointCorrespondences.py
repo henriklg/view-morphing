@@ -5,28 +5,22 @@ from imutils import face_utils
 from time import sleep
 
 
-def getPointCorrespondences(file_1, file_2):
+def getPointCorrespondences(im1, im2):
     global point
     point = (-1, -1)
     point_click = (-1, -1)
     point_list = []
-    im1 = cv2.imread(file_1)
     height, width, _ = im1.shape
-    print(height, width)
-    im2 = cv2.imread(file_2)
 
     numpy_horizontal = np.hstack((im1, im2))
     numpy_orig = numpy_horizontal.copy()
 
-
     cv2.namedWindow('Images', cv2.WINDOW_NORMAL)
-    #cv2.namedWindow('Image2', cv2.WINDOW_NORMAL)
     cv2.setMouseCallback('Images', get_coords)
-    #cv2.setMouseCallback('Image2', get_coords)
 
-    while(1):
+    num_points = 0
+    while True:
         cv2.imshow('Images', numpy_horizontal)
-        #cv2.imshow('Image2', im2)
         k = cv2.waitKey(20) & 0xFF
 
         if point_click != point:
@@ -34,43 +28,43 @@ def getPointCorrespondences(file_1, file_2):
             point_click = point
             point_list.append(point_click)
             print(point_list)
+            num_points += 1
+
         if k == 27:
             break
+
+        # S: return list of points
         elif k == ord('s'):
-            point_correspondences = []
             count = 0
-            add_point = []
+            countx = 0
+            county = 0
+            pointx = np.zeros((num_points//2, 2))  # [num_points, x]
+            pointy = np.zeros((num_points//2, 2))
             for p in point_list:
+                # image 1
                 if count % 2 == 0:
-                    add_point.append(p)
-                    count += 1
+                    x = p[0]
+                    y = p[1]
+                    pointx[countx] = [x, y]
+                    countx += 1
+                # image 2
                 else:
                     x = p[0] - width
                     y = p[1]
-                    add_point.append((x,y))
-                    point_correspondences.append(add_point)
-                    add_point = []
-                    count += 1
-            print(point_correspondences)
+                    pointy[county] = [x, y]
+                    county += 1
+                count += 1
+            return pointx, pointy
 
 
-
-        elif k == ord('a'):
-            print(posList1, posList2)
-
-        elif k == ord('s'):
-            if len(posList1) == len(posList2):
-                return posList1, posList2
-            else:
-                print('ERROR')
+        # N: new list of points
         elif k == ord('n'):
-            posList1 = []
-            posList2 = []
+            point_list = []
             numpy_horizontal = numpy_orig.copy()
             cv2.imshow('Images', numpy_horizontal)
 
     cv2.destroyAllWindows()
-    return posList
+    return point_list
 
 
 def get_coords(event, x, y, flags, param):
