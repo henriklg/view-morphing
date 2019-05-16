@@ -23,9 +23,8 @@ def normalize_points(x, y):
     # 3x3 transformation matrix
     t_norm = np.array([[sf, 0, -sf*mean_x], [0, sf, -sf*mean_y], [0, 0, 1]])
 
-    o = np.ones((num_points, 1))
-
-    xy = np.concatenate((x, y, o), axis=1)
+    ones = np.ones((num_points, 1))
+    xy = np.concatenate((x, y, ones), axis=1)
 
     # (n x 3) normalized homogeneous coordinates of points
     xy_normalized = np.dot(t_norm, xy.T)
@@ -82,5 +81,5 @@ if __name__ == '__main__':
     image1 = 'data/einstein1.jpg'
     image2 = 'data/einstein3.jpg'
 
-    fundamental_matrix = findfundmat(image1, image2)
-    print(fundamental_matrix)
+    F = fundamental_matrix(image1, image2)
+    print(F)
