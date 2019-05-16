@@ -4,6 +4,8 @@ from morph import automatic_point_correspondences, delaunay_triangulation
 import cv2
 import numpy as np
 from numpy.linalg import inv
+from Postwarp import getRectangle, getLines, homography, getPoints, homography_points
+
 
 # Read image from file
 image1 = cv2.imread('data/einstein1.jpg')
@@ -23,17 +25,36 @@ print(new_size)
 dest = cv2.warpPerspective(image1, inv(H0), (new_size, new_size))
 dest2 = cv2.warpPerspective(image2, inv(H0), (new_size, new_size))
 
-cv2.imshow('wind', dest)
-cv2.imshow('wind2', dest2)
-
-cv2.waitKey(0)
-cv2.destroyAllWindows()
+# cv2.imshow('wind', dest)
+# cv2.imshow('wind2', dest2)
+#
+# cv2.waitKey(0)
+# cv2.destroyAllWindows()
 
 # Morph images
 points1, points2 = automatic_point_correspondences(dest, dest2)
 morph = delaunay_triangulation(dest, dest2, points1, points2)
 
-cv2.imshow('morph', morph)
+
+#
+# cv2.imshow('morph', morph)
+# cv2.waitKey(0)
+# cv2.destroyAllWindows()
+
+# Postwarp
+m_points = getPoints(morph)
+#blend = 0.5*image1 + 0.5*image2
+im = cv2.imread('maske_einstein.png')
+p_points = getPoints(np.array(im).astype(np.uint8))
+
+H_s = homography_points(m_points, p_points)
+h, w, _ = image1.shape
+
+final_morph = cv2.warpPerspective(morph, H_s, (h, w))
+
+cv2.imshow('window', final_morph)
 
 cv2.waitKey(0)
 cv2.destroyAllWindows()
+
+
