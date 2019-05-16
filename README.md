@@ -1,5 +1,2 @@
 # view-morphing
-For the course TEK5030
-
-# TODO:
-- add requierements.txt
+For the course TEK5030 spring of 2019.
