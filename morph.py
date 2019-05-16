@@ -2,41 +2,8 @@
 
 import cv2
 import numpy as np
-import random
-import dlib
-from imutils import face_utils
-import time
+from pointCorrespondences import automatic_point_correspondences
 
-
-def automatic_point_correspondences(im1, im2):
-    # Load pre-trained facial features model
-    p = "shape_predictor_68_face_landmarks.dat"
-    detector = dlib.get_frontal_face_detector()
-    predictor = dlib.shape_predictor(p)
-
-    # Load images and convert to grayscale
-    #im1 = cv2.imread(file_1)
-    im1 = cv2.cvtColor(im1, cv2.COLOR_BGR2GRAY)
-    #im2 = cv2.imread(file_2)
-    im2 = cv2.cvtColor(im2, cv2.COLOR_BGR2GRAY)
-
-    # Detect faces with the detector
-    rects_1 = detector(im1, 0)
-    rects_2 = detector(im2, 0)
-
-    # Image 1
-    for (i, rect) in enumerate(rects_1):
-        # Make the prediction and transfom it to numpy array
-        shape = predictor(im1, rect)
-        shape_1 = face_utils.shape_to_np(shape)
-
-    # Image 2
-    for (i, rect) in enumerate(rects_2):
-        # Make the prediction and transform it to numpy array
-        shape = predictor(im2, rect)
-        shape_2 = face_utils.shape_to_np(shape)
-
-    return shape_1, shape_2
 
 
 def mapDelaunay(triangles_A, points_A, points_B, points_C):
@@ -233,6 +200,7 @@ def insert_points(subdiv, p_list):
 if __name__ == '__main__':
     image1 = cv2.imread('data/einstein1.jpg')
     image2 = cv2.imread('data/einstein3.jpg')
+    filename = 'einstein'
     print(image1.shape)
 
     # Get points with dlib facial feature point detector
@@ -242,31 +210,37 @@ if __name__ == '__main__':
     morph = delaunay_triangulation(image1, image2, points_1, points_2, 0)
 
     i = 0
+    step_size = 0.2
     count = 0
-    while(True):
-        cv2.imshow("Output", morph[70:178, 78:190])
-
+    while True:
+        cv2.imshow("Output", morph)
         k = cv2.waitKey(20) & 0xFF
-        # Press n button for next imorph
-        if k == ord('n'):
-            i += 0.2
 
+        # N: next worph
+        if k == ord('n'):
+            i += step_size
             if i > 1:
                 i = 1
-
             morph = delaunay_triangulation(image1, image2, points_1, points_2, i)
-            print('____________________________________',  i)
+            print("i: {:.2f}".format(i))
 
-
+        # P: previous morph
         if k == ord('p'):
-            i -= 0.2
+            i -= step_size
             if i < 0:
                 i = 0
             morph = delaunay_triangulation(image1, image2, points_1, points_2, i)
+            print("i: {:.2f}".format(i))
 
+        # S: save image
         if k == ord('s'):
-            cv2.imwrite('einstein_morph_removed{}.jpg'.format(count), morph[70:178, 78:190])
+            cv2.imwrite('morphs/{}_morph{}.jpg'.format(filename, count), morph)
             count += 1
-            print('einstein_morph_removed{}.jpg'.format(i))
+            print('saving: {}_morph{}.jpg'.format(filename, i))
+
+        # Q: quit program
+        if k == ord('q'):
+            cv2.destroyAllWindows()
+            break
 
     cv2.destroyAllWindows()

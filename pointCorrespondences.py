@@ -2,7 +2,6 @@ import numpy as np
 import cv2
 import dlib
 from imutils import face_utils
-from time import sleep
 
 
 def getPointCorrespondences(im1, im2):
@@ -126,7 +125,7 @@ def automatic_point_correspondences_imshow(im1, im2):
     return shape_1, shape_2
 
 
-def automatic_point_correspondences(im1, im2):
+def automatic_point_correspondences(im1, im2, returntype='list'):
     # Load pre-trained facial features model
     p = "shape_predictor_68_face_landmarks.dat"
     detector = dlib.get_frontal_face_detector()
@@ -152,13 +151,15 @@ def automatic_point_correspondences(im1, im2):
         shape = predictor(im2, rect)
         shape_2 = face_utils.shape_to_np(shape)
 
-    # some magic to make the coordinates compatible with other code
-    x1 = shape_1[:, 0][np.newaxis].T
-    y1 = shape_1[:, 1][np.newaxis].T
-    x2 = shape_2[:, 0][np.newaxis].T
-    y2 = shape_2[:, 1][np.newaxis].T
-
-    return x1, y1, x2, y2
+    if returntype == 'vector':
+        # some magic to make the coordinates compatible with other code
+        x1 = shape_1[:, 0][np.newaxis].T
+        y1 = shape_1[:, 1][np.newaxis].T
+        x2 = shape_2[:, 0][np.newaxis].T
+        y2 = shape_2[:, 1][np.newaxis].T
+        return x1, y1, x2, y2
+    else:
+        return shape_1, shape_2
 
 
 if __name__ == '__main__':
@@ -171,5 +172,3 @@ if __name__ == '__main__':
         str = str + '{}; '.format(point[0])
     str = str + ']'
     print(str)
-
-    #print((x_1)[np.newaxis].T)
