@@ -1,7 +1,7 @@
 import numpy as np
 import cv2
 from matplotlib import pyplot as plt
-from findfundmat import findfundmat
+from find_fundamental import fundamental
 from pointCorrespondences import automatic_point_correspondences
 
 def drawlines(img1, img2, lines, pts1, pts2, color):
@@ -59,8 +59,8 @@ def find_epilines(imgLeft, imgRight, ptsLeft, ptsRight, F):
     plt.subplot(122), plt.imshow(img3)
     plt.show()
 
-if __name__ == '__main__':
 
+if __name__ == '__main__':
     imgLeft = cv2.imread('einstein2.jpg')
     imgRight = cv2.imread('einstein1.jpg')
     x_1, y_1, x_2, y_2 = automatic_point_correspondences(imgLeft, imgRight)
@@ -71,5 +71,5 @@ if __name__ == '__main__':
     ptsLeft = np.array([ptsLeft[0,:], ptsLeft[30,:], ptsLeft[60,:]])
     ptsRight = np.array([ptsRight[0,:], ptsRight[30,:], ptsRight[60,:]])
 
-    F = findfundmat(imgLeft, imgRight)
+    F = fundamental(imgLeft, imgRight)
     find_epilines(imgLeft[:,:,0], imgRight[:,:,0], ptsLeft, ptsRight, F)
