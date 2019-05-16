@@ -41,7 +41,7 @@ def fundamental_matrix(image1, image2):
     :param image2:
     :return: fundamental matrix F (3 x 3)
     """
-    [x1, y1, x2, y2] = automatic_point_correspondences(image1, image2)
+    [x1, y1, x2, y2] = automatic_point_correspondences(image1, image2, returntype='vector')
 
     # get the number of data points
     num_points = len(x1)
