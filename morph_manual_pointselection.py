@@ -1,5 +1,5 @@
-from pointCorrespondences import getPointCorrespondences
-from morph import delaunay_triangulation, automatic_point_correspondences
+from pointCorrespondences import getPointCorrespondences, automatic_point_correspondences
+from morph import delaunay_triangulation
 import cv2
 
 # Variables

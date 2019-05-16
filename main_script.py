@@ -1,18 +1,18 @@
-from findfundmat import findfundmat
+from find_fundamental import fundamental
 from prewarp import find_prewarp
-from morph import automatic_point_correspondences, delaunay_triangulation
-import cv2
-import numpy as np
+from morph import delaunay_triangulation
+from getCorresponences import automatic_point_correspondences
 from numpy.linalg import inv
 from Postwarp import getRectangle, getLines, homography, getPoints, homography_points
-
+import cv2
+import numpy as np
 
 # Read image from file
 image1 = cv2.imread('data/einstein1.jpg')
 image2 = cv2.imread('data/einstein3.jpg')
 
 # Find fundamental matrix
-F = findfundmat(image1, image2)
+F = fundamental(image1, image2)
 
 # Get homographies from the fundamental matrix
 H0, H1 = find_prewarp(F)
