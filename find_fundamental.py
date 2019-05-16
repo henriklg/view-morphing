@@ -10,7 +10,7 @@ def normalize_points(x, y):
     :param y: (n x 1 ndarray) y coordinates of points
     :return: normalized points and 3x3 transformation matrix
     """
-    assert
+    assert len(x) == len(y), "x, y points are not of same length."
     num_points = len(x)
 
     mean_x = np.mean(x)
