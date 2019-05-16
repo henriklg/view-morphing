@@ -66,7 +66,7 @@ def find_prewarp(F):
 
     #find corresponding axis in image 1
     Fd0 = F.dot(d0)
-    d1 = np.array([-Fd0[0], Fd0[1], 0])
+    d1 = np.array([-Fd0[1], Fd0[0], 0])
 
     #find angle of rotation
     #theta0 = -np.pi/2 - np.arctan((d0[1]*e0[0] - d0[0]*e0[1])/e0[2])
@@ -82,9 +82,11 @@ def find_prewarp(F):
     R_d0_theta0 = rotation_matrix(d0, theta0)
     R_d1_theta1 = rotation_matrix(d1, theta1)
 
+
     #find new epipoles
     new_e0 = R_d0_theta0.dot(e0)
     new_e1 = R_d1_theta1.dot(e1)
+
 
 
     #find new angle of rotation
@@ -117,8 +119,8 @@ def find_prewarp(F):
                   [0,-a,-c],
                   [0, 0, b]])
 
-    H0 = R_phi0 * R_d0_theta0
-    H1 = T * R_phi1 * R_d1_theta1
+    H0 = R_phi0.dot(R_d0_theta0)
+    H1 = (T.dot(R_phi1)).dot(R_d1_theta1)
     """
 
     return H0, H1
