@@ -59,7 +59,7 @@ def getPoints(im):
         k = cv2.waitKey(20) & 0xFF
 
         if point_click != point:
-            cv2.circle(im_show, point, 1, (255, 0, 255), 1)
+            cv2.circle(im_show, point, 1, (255, 0, 255), 2)
             point_click = point
             m_point_list.append(point_click)
 

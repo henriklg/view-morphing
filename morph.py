@@ -3,7 +3,17 @@
 import cv2
 import numpy as np
 from pointCorrespondences import automatic_point_correspondences
+from numpy.linalg import inv
 
+
+def transform_points(points, H_inv):
+    z = np.ones(shape=(1, len(points)))
+    points = np.concatenate((points, z.T), axis=1)
+    points_trans = np.matmul(H_inv, points.T)
+
+
+    print(points_trans.shape)
+    return np.array(points_trans.T).astype(np.uint8)
 
 
 def mapDelaunay(triangles_A, points_A, points_B, points_C):
@@ -64,7 +74,7 @@ def applyAffineTransform(im_src, t_scr, dest_scr, size):
 
 def remove_points(points_1, points_2, remove_idx=None):
     if remove_idx is None:
-        remove_idx = [50, 60, 61, 62, 68, 63, 64, 66, 54, 65, 56, 33, 35]
+        remove_idx = [1, 3, 5, 7, 9, 11, 13, 15, 50, 60, 61, 62, 68, 63, 64, 66, 54, 65, 56, 33, 35]
 
 
     points_1 = np.delete(points_1, remove_idx, 0)
@@ -72,7 +82,7 @@ def remove_points(points_1, points_2, remove_idx=None):
 
     return points_1, points_2
 
-def delaunay_triangulation(image1, image2, points_1, points_2, alph=0.5):
+def delaunay_triangulation(image1, image2, points_1, points_2, morphshape, removepoints=True, alph=0.5):
     """
     Performs morphing of two images with delaunay triangulation. Alph indicates how much morphed image looks like image 2
     :param image1: image of a face
@@ -83,7 +93,8 @@ def delaunay_triangulation(image1, image2, points_1, points_2, alph=0.5):
     :return: morphed image
     """
     # Remove some points to avoid overcrowding
-    points_1, points_2 = remove_points(points_1, points_2)
+    if removepoints:
+        points_1, points_2 = remove_points(points_1, points_2)
 
     # Get intermediate points for generated image
     points_k = (1-alph)*points_1 + alph*points_2
@@ -103,7 +114,7 @@ def delaunay_triangulation(image1, image2, points_1, points_2, alph=0.5):
     triangles_2, triangles_k = mapDelaunay(triangles_1, points_1, points_2, points_k)
 
     # initiate morphed image placeholder
-    morph_im = np.zeros(shape=np.shape(image1))
+    morph_im = np.zeros(shape=np.array([morphshape[0], morphshape[1], 3]))
 
     for i in range(0, len(triangles_k)):
         # Find bounding rectangle
@@ -151,8 +162,6 @@ def delaunay_triangulation(image1, image2, points_1, points_2, alph=0.5):
             if k == ord('s'):
                 show = False
 
-        # Create mask and fill the triangle
-        mask = np.zeros((rk[3], rk[2], 1), dtype=np.float32)
 
         # Get triangle position within the rectangles
         t1Rect = []
@@ -164,9 +173,6 @@ def delaunay_triangulation(image1, image2, points_1, points_2, alph=0.5):
             t1Rect.append(((t1[0+2*j] - r1[0]), (t1[1+2*j] - r1[1])))
             t2Rect.append(((t2[0+2*j] - r2[0]), (t2[1+2*j] - r2[1])))
 
-        # Fill the triangle in the mask
-        cv2.fillConvexPoly(mask, np.int32(tkRect), (1.0, 1.0, 1.0), 16, 0)
-
         # Apply warp to the rectangular patches
         img1Rect = image1[r1[1]:r1[1] + r1[3], r1[0]:r1[0] + r1[2]]
         img2Rect = image2[r2[1]:r2[1] + r2[3], r2[0]:r2[0] + r2[2]]
@@ -175,14 +181,36 @@ def delaunay_triangulation(image1, image2, points_1, points_2, alph=0.5):
         warpImage1 = applyAffineTransform(img1Rect, t1Rect, tkRect, size)
         warpImage2 = applyAffineTransform(img2Rect, t2Rect, tkRect, size)
 
+
         # Fill in the morphed image
         imgRect = (1.0 - alph) * np.float32(warpImage1) + alph * warpImage2
 
+
+        m = morph_im[rk[1]:rk[1] + rk[3], rk[0]:rk[0] + rk[2]]
+        m_shape = m.shape
+        rect_shape = imgRect.shape
+        if m_shape != rect_shape:
+            imgRect = cv2.resize(imgRect, (m_shape[1], m_shape[0]), interpolation=cv2.INTER_AREA)
+            print(imgRect.shape)
+
+        # Create mask and fill the triangle
+        mask = np.zeros(imgRect.shape, dtype=np.float32)
+
+        # Fill the triangle in the mask
+        cv2.fillConvexPoly(mask, np.int32(tkRect), (1.0, 1.0, 1.0), 16, 0)
 
 
         # Copy triangular region of the rectangular patch to the output image
         morph_im[rk[1]:rk[1] + rk[3], rk[0]:rk[0] + rk[2]] = morph_im[rk[1]:rk[1] + rk[3], rk[0]:rk[0] + rk[2]] * (1 - mask) \
                                                              + imgRect * mask
+
+
+        show = False
+        while(show):
+            cv2.imshow('window2', morph_im)
+            k = cv2.waitKey(20) & 0xFF
+            if k == ord('s'):
+                show = False
 
     return morph_im.astype(np.uint8)
 

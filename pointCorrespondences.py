@@ -139,6 +139,8 @@ def automatic_point_correspondences(im1, im2, returntype='list'):
     rects_1 = detector(im1, 0)
     rects_2 = detector(im2, 0)
 
+    print(rects_1, rects_2)
+
     # Image 1
     for (i, rect) in enumerate(rects_1):
         # Make the prediction and transfom it to numpy array
