@@ -10,46 +10,29 @@ def transform_points(points, H_inv):
     z = np.ones(shape=(1, len(points)))
     points = np.concatenate((points, z.T), axis=1)
     points_trans = np.matmul(H_inv, points.T)
-
-
     print(points_trans.shape)
     return np.array(points_trans.T).astype(np.uint8)
 
 
 def mapDelaunay(triangles_A, points_A, points_B, points_C):
+    # Using delauny triangle map for one image, get triangles for the two other images as well
     triangles_B = []
     triangles_C = []
-    #print(triangles_A)
-    #print(points)
     points_A = np.uint8(points_A)
     triangles_A = np.uint8(triangles_A)
     for tri in triangles_A:
         tri_B = []
         tri_C = []
         for i in range(0, 6, 2):
-            #idx = points_A.index([int(tri[0+i]), int(tri[1+i])])
-            #print(tri[i])
             index = np.where(points_A==tri[i])
-
-            #index = np.where(np.isclose(points_A, tri[i], 0.1))
-            #print(index)
             for idx in index[0]:
                 if points_A[idx][1] == tri[1+i]:
                     tri_B.extend(points_B[idx])
                     tri_C.extend(points_C[idx])
 
 
-        # if len(tri_B) < 6:
-        #     print(tri_B)
-        #     print('B: ', tri_B)
-        #     print(index)
-        # if len(tri_C) < 6:
-        #     print('C: ', tri_C)
-        #     print(index)
         triangles_B.append(tri_B)
-
         triangles_C.append(tri_C)
-        #print(len(triangles_B), len(triangles_A), len(triangles_C))
 
     return triangles_B, triangles_C
 
@@ -73,9 +56,9 @@ def applyAffineTransform(im_src, t_scr, dest_scr, size):
     return dst
 
 def remove_points(points_1, points_2, remove_idx=None):
+    # Remove some of the redundant poits
     if remove_idx is None:
         remove_idx = [1, 3, 5, 7, 9, 11, 13, 15, 50, 60, 61, 62, 68, 63, 64, 66, 54, 65, 56, 33, 35]
-
 
     points_1 = np.delete(points_1, remove_idx, 0)
     points_2 = np.delete(points_2, remove_idx, 0)
@@ -235,10 +218,10 @@ if __name__ == '__main__':
     points_1, points_2 = automatic_point_correspondences(image1, image2)
 
     # morph with delaunay triangulation
-    morph = delaunay_triangulation(image1, image2, points_1, points_2, 0)
+    morph = delaunay_triangulation(image1, image2, points_1, points_2, morphshape=image1.shape, removepoints=True, alph=0)
 
     i = 0
-    step_size = 0.2
+    step_size = 0.25
     count = 0
     while True:
         cv2.imshow("Output", morph)
@@ -249,7 +232,7 @@ if __name__ == '__main__':
             i += step_size
             if i > 1:
                 i = 1
-            morph = delaunay_triangulation(image1, image2, points_1, points_2, i)
+            morph = delaunay_triangulation(image1, image2, points_1, points_2, morphshape=image1.shape, removepoints=True, alph=i)
             print("i: {:.2f}".format(i))
 
         # P: previous morph
@@ -257,7 +240,7 @@ if __name__ == '__main__':
             i -= step_size
             if i < 0:
                 i = 0
-            morph = delaunay_triangulation(image1, image2, points_1, points_2, i)
+            morph = delaunay_triangulation(image1, image2, points_1, points_2, morphshape=image1.shape, removepoints=True, alph=i)
             print("i: {:.2f}".format(i))
 
         # S: save image

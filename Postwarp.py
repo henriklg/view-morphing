@@ -3,12 +3,18 @@ import numpy as np
 
 
 def get_coords(event, x, y, flags, param):
+    """
+    Gets coordinates of mouse in the event of left mouse button down
+    """
     global point
     if event == cv2.EVENT_LBUTTONDOWN:
         point = x, y
         print(point)
 
 def getRectangle(im):
+    """
+    Creates rectangles from selected points on image
+    """
     global point
     point = (-1, -1)
     point_click = (-1, -1)
@@ -46,6 +52,9 @@ def getRectangle(im):
     return m_point_list
 
 def getPoints(im):
+    """
+    Draws and returns selected points on image
+    """
     global point
     point = (-1, -1)
     point_click = (-1, -1)
@@ -80,6 +89,9 @@ def getPoints(im):
     return m_point_list
 
 def getLines(im):
+    """
+    Draws lines between selected points on image. Returns points
+    """
     global point
     point = (-1, -1)
     point_click = (-1, -1)
