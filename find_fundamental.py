@@ -19,7 +19,8 @@ def normalize_points(x, y):
     shifted_x = x - mean_x
     shifted_y = y - mean_y
 
-    sf = np.sqrt(2) / np.mean( np.sqrt(shifted_x**2 + shifted_y**2) )
+    # scaling factor
+    sf = np.sqrt(2) / np.mean(np.sqrt(shifted_x**2 + shifted_y**2))
     # 3x3 transformation matrix
     t_norm = np.array([[sf, 0, -sf*mean_x], [0, sf, -sf*mean_y], [0, 0, 1]])
 
@@ -57,7 +58,8 @@ def fundamental_matrix(image1, image2):
 
     # compute A - the equation matrix
     mul = lambda a, b : np.multiply(a, b)
-    a = np.concatenate((mul(x1, x2), mul(x1, y2), x1, mul(y1, x2), mul(y1, y2), y1, x2, y2, o[:, 0])).reshape((num_points,-1), order='F')
+    a = np.concatenate((mul(x1, x2), mul(x1, y2), x1, mul(y1, x2), mul(y1, y2), y1, x2, y2,
+                        o[:, 0])).reshape((num_points, -1), order='F')
 
     # the singular value decomposition SVD
     U, D, V = np.linalg.svd(a)
