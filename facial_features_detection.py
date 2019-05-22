@@ -12,6 +12,7 @@ predictor = dlib.shape_predictor(p)
 
 cap = cv2.VideoCapture(0)
 
+counter = 0
 while True:
     # Getting out image by webcam 
     _, image = cap.read()
@@ -39,7 +40,8 @@ while True:
         break
 
     if k == ord('s'):
-        cv2.imwrite('face_features.png', image)
+        cv2.imwrite('data/face_features{}.png'.format(counter), image)
+        counter += 1
 
 cv2.destroyAllWindows()
 cap.release()
