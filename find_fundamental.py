@@ -1,4 +1,5 @@
 import numpy as np
+import cv2
 from pointCorrespondences import automatic_point_correspondences
 
 
@@ -80,8 +81,8 @@ def fundamental_matrix(image1, image2):
 
 
 if __name__ == '__main__':
-    image1 = 'data/einstein1.jpg'
-    image2 = 'data/einstein3.jpg'
+    image1 = cv2.imread('data/einstein1.jpg')
+    image2 = cv2.imread('data/einstein3.jpg')
 
     F = fundamental_matrix(image1, image2)
     print(F)
