@@ -16,7 +16,7 @@ Goal: Morphing two mirrored images of a face seen from the side to get a front-v
 
 5. Post-warp the intermediate morphed image back to the desired image plane. 
 
-More details may be found in the [project report](https://github.com/ingridut/ViewMorphing/blob/master/Report.pdf). 
+More details may be found in the [project report](https://github.com/henriklg/view-morphing/blob/master/project_report.pdf). 
 
 ## Examples
 #### Straight morph (no view morphing)
