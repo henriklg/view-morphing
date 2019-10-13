@@ -5,8 +5,8 @@ import cv2
 # let's go code an faces detector(HOG) and after detect the 
 # landmarks on this detected face
 
-# p = our pre-treined model directory, on my case, it's on the same script's diretory.
-p = "shape_predictor_68_face_landmarks.dat"
+# our pre-treined model directory.
+p = "../data/shape_predictor_68_face_landmarks.dat"
 detector = dlib.get_frontal_face_detector()
 predictor = dlib.shape_predictor(p)
 

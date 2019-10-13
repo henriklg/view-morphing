@@ -3,7 +3,7 @@ from prewarp import find_prewarp
 from morph import delaunay_triangulation, transform_points
 from pointCorrespondences import automatic_point_correspondences, getPointCorrespondences
 from numpy.linalg import inv
-from Postwarp import getRectangle, getLines, homography, getPoints, homography_points
+from postwarp import getRectangle, getLines, homography, getPoints, homography_points
 import cv2
 import numpy as np
 
